@@ -3,31 +3,23 @@ import select
 from thread import *
 import sys
 
-
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-"""
-the first argument AF_INET is the address domain of the socket. This is used when we have an Internet Domain
-with any two hosts
-The second argument is the type of socket. SOCK_STREAM means that data or characters are read in a continuous flow
-"""
+
 server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-if len(sys.argv) != 3:
-    print "Correct usage: script, IP address, port number"
-    exit()
-IP_address = str(sys.argv[1])
-Port = int(sys.argv[2])
-server.bind((IP_address, Port)) 
-#binds the server to an entered IP address and at the specified port number. The client must be aware of these parameters
-server.listen(100)
-#listens for 100 active connections. This number can be increased as per convenience
+
+HOST = '127.0.0.1'  # The server's hostname or IP address
+PORT = 8882        # The port used by the server
+server.bind((HOST, PORT)) # bind server to the ip at the specified port number
+
+server.listen(5) # listens for 5 active connections.
+
 list_of_clients=[]
 
 def clientthread(conn, addr):
-    conn.send("Welcome to this chatroom!")
-    #sends a message to the client whose user object is conn
+    conn.send("Welcome to this chatroom!") #sends a message to the client whose user object is conn
     while True:
-            try:     
-                message = conn.recv(2048)    
+            try:
+                message = conn.recv(2048)
                 if message:
                     print "<" + addr[0] + "> " + message
                     message_to_send = "<" + addr[0] + "> " + message
