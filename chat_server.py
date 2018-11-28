@@ -19,35 +19,52 @@ def clientthread(conn,addr):
             try:
                 message = conn.recv(2048)
                 if message:
+                    recipient = 1
                     command = message.split(' ', 1)[0].rstrip()
 
                     if command == 'login':
                         for clients in list_of_clients:
                             if clients[0] == conn:
                                 clients[2] = message.split(' ', 1)[1].rstrip()
+                                message = 'You are logged in as '+clients[2]
+
                     elif command == 'list':
-                        message = 'users online: '.join(str(e[2]) for e in list_of_clients)
+                        message = '\n'
+                        message = message.join(str(e[2]) for e in list_of_clients)
+                        message = "users online: \n"+message
+
+                    elif command == 'sendto':
+                        recipient = message.split(' ', 2)[1].rstrip()
+                        message = clientmessage.split(' ', 2)[2].rstrip()
 
                     for clients in list_of_clients:
                         if clients[0] == conn and clients[2] == '':
                             message_to_send = "Please login"
                         elif clients[0] == conn and clients[2] != '':
-                            message_to_send = "<" + clients[2] + "> " + message
+                            message_to_send = message
                     print message_to_send
-                    broadcast(message_to_send,conn)
+                    broadcast(message_to_send,conn,recipient)
                 else:
                     remove(conn)
             except:
                 continue
 
-def broadcast(message,connection):
+def broadcast(message,connection,recipient):
     for clients in list_of_clients:
-        if clients[0] == connection:
-            try:
-                clients[0].send(message)
-            except:
-                clients[0].close()
-                remove(clients)
+        if recipient == 1:
+            if clients[0] == connection:
+                try:
+                    clients[0].send(message)
+                except:
+                    clients[0].close()
+                    remove(clients)
+        else:
+            if clients[2] == recipient:
+                try:
+                    clients[0].send(message)
+                except:
+                    clients[0].close()
+                    remove(clients)
 
 def remove(connection):
     if connection in list_of_clients:

@@ -40,25 +40,17 @@ def checkCommand(argument, message):
 
 def login(message):
     server.send(message)
-    sys.stdout.write("<You>")
-    sys.stdout.write(message)
 
 def list(message):
     server.send(message)
-    sys.stdout.write("<You>")
-    sys.stdout.write(message)
 
 def sendto(message):
-    print 'sendto'
+    server.send(message)
 
 def logout(message):
     server.send('logout')
-    sys.stdout.write("<You>")
-    sys.stdout.write("logout")
 
 def exit(message):
     server.send('exit')
-    sys.stdout.write("<You>")
-    sys.stdout.write("exit")
 
 main()
