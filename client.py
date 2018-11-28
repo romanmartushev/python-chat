@@ -2,12 +2,13 @@ import socket
 import select
 import sys
 
-def main():
-    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    HOST = '127.0.0.1'  # The server's hostname or IP address
-    PORT = 8882        # The port used by the server
-    server.connect((HOST, PORT))
+HOST = '127.0.0.1'  # The server's hostname or IP address
+PORT = 8882        # The port used by the server
+server.connect((HOST, PORT))
+
+def main():
 
     while True:
         sockets_list = [sys.stdin, server]
@@ -20,10 +21,6 @@ def main():
                 message = sys.stdin.readline()
                 argument = message.split(' ', 1)[0].rstrip()
                 checkCommand(argument, message)
-
-                # server.send(message)
-                # sys.stdout.write("<You>")
-                # sys.stdout.write(message)
                 sys.stdout.flush()
     server.close()
 
@@ -37,23 +34,31 @@ def checkCommand(argument, message):
     }
     func = switcher.get(argument,'Invalid argument')
     if func != 'Invalid argument':
-        func()
+        func(message)
     else:
         print func
 
-def login():
-    print 'login'
+def login(message):
+    server.send(message)
+    sys.stdout.write("<You>")
+    sys.stdout.write(message)
 
-def list():
-    print 'list'
+def list(message):
+    server.send(message)
+    sys.stdout.write("<You>")
+    sys.stdout.write(message)
 
-def sendto():
+def sendto(message):
     print 'sendto'
 
-def logout():
-    print 'logout'
+def logout(message):
+    server.send('logout')
+    sys.stdout.write("<You>")
+    sys.stdout.write("logout")
 
-def exit():
-    print 'exit'
+def exit(message):
+    server.send('exit')
+    sys.stdout.write("<You>")
+    sys.stdout.write("exit")
 
 main()
