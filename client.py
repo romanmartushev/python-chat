@@ -16,13 +16,17 @@ def main():
         for socks in read_sockets:
             if socks == server:
                 message = socks.recv(2048)
-                print message
+                if message.rstrip() == 'EXIT':
+                    return 0;
+                else:
+                    print message
             else:
                 message = sys.stdin.readline()
                 argument = message.split(' ', 1)[0].rstrip()
                 checkCommand(argument, message)
                 sys.stdout.flush()
     server.close()
+    print 'You have exited.'
 
 def checkCommand(argument, message):
     switcher = {
@@ -39,18 +43,40 @@ def checkCommand(argument, message):
         print func
 
 def login(message):
-    server.send(message)
+    name = message.split(' ', 1)[1].rstrip()
+    if ' ' in name or len(name) > 20:
+        print 'Bad username'
+    else:
+        server.send(message)
 
 def list(message):
-    server.send(message)
+    list = message.split(' ', 1)
+    if len(list) > 1:
+        print 'Invalid command'
+    else:
+        server.send(message)
 
 def sendto(message):
-    server.send(message)
+    list = message.split(' ', 2)
+    if len(list) != 3 or len(list[1]) > 20:
+        print 'Bad username'
+    elif len(list[2]) > 65535:
+        print 'Bad message'
+    else:
+        server.send(message)
 
 def logout(message):
-    server.send('logout')
+    list = message.split(' ', 1)
+    if len(list) > 1:
+        print 'Invalid command'
+    else:
+        server.send(message)
 
 def exit(message):
-    server.send('exit')
+    list = message.split(' ', 1)
+    if len(list) > 1:
+        print 'Invalid command'
+    else:
+        server.send(message)
 
 main()
