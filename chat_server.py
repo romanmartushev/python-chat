@@ -27,12 +27,21 @@ def clientthread(conn,addr):
                     recipient = sender # sets the sender as recipient
                     logout = False # sets logout flag to false
                     exit = False # sets exit flag to false
+                    name_taken = False # sets name_taken flag to false
 
                     command = message.split(' ', 1)[0].rstrip() # grabs the first item from string which is the command
 
                     if command == 'login':
-                        sender[2] = message.split(' ', 1)[1].rstrip() # sets the incoming senders name
-                        message_to_send = 'You are logged in as ' + sender[2] # return message to be sent to incloming sender after login
+                        name = message.split(' ', 1)[1].rstrip()
+                        for clients in list_of_clients:
+                            if clients[2] == name:
+                                name_taken = True
+
+                        if name_taken:
+                            message_to_send = 'This username is already taken' # tell the client this username is taken
+                        else:
+                            sender[2] = name # sets the incoming senders name
+                            message_to_send = 'You are logged in as ' + sender[2] # return message to be sent to incloming sender after login
 
                     elif command == 'list':
                         message_to_send = 'users online:\n' #  add a header to the list so we know these are the users online
@@ -49,7 +58,7 @@ def clientthread(conn,addr):
                                 if clients[2] == recipient:
                                     recipient = clients # Sets the outgoing recipient
 
-                            message_to_send = sender[2] + ':'+ message.split(' ', 2)[2].rstrip()
+                            message_to_send = sender[2] + ': '+ message.split(' ', 2)[2].rstrip()
 
                     elif command == 'logout':
                         logout = True
