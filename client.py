@@ -34,7 +34,8 @@ def checkCommand(argument, message):
         'list' : list,
         'sendto' : sendto,
         'logout' : logout,
-        'exit' : exit
+        'exit' : exit,
+        'help' : help
     }
     func = switcher.get(argument,'Invalid argument')
     if func != 'Invalid argument':
@@ -78,5 +79,14 @@ def exit(message):
         print 'Invalid command'
     else:
         server.send(message)
+
+def help(message):
+    print 'Commands:'
+    print 'login [username] # this command allows you to login to the chat'
+    print 'list # allows you to list the users currently online'
+    print 'sendto [username] [message] # allows you to send a message to a currently logged in user'
+    print 'logout # logs you out of the chat room but you are still allowed to login and list'
+    print 'exit # logs you out, closes your connection and closes the chat program'
+
 
 main()
