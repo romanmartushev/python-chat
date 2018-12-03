@@ -44,11 +44,14 @@ def checkCommand(argument, message):
         print func
 
 def login(message):
-    name = message.split(' ', 1)[1].rstrip()
-    if ' ' in name or len(name) > 20:
-        print 'Bad username'
+    if len(message.split(' ', 1)) == 2:
+        name = message.split(' ', 1)[1].rstrip()
+        if ' ' in name or len(name) > 20:
+            print 'Bad username'
+        else:
+            server.send(message)
     else:
-        server.send(message)
+        print 'Bad username'
 
 def list(message):
     list = message.split(' ', 1)
